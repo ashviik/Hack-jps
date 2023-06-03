@@ -1,6 +1,7 @@
-const time = {
+const timer = {
     Study: 25,
     Break: 5,
+    sessions: 0,
   };
 
 let interval;
@@ -10,6 +11,8 @@ mainButton.addEventListener('click', () => {
   const { action } = mainButton.dataset;
   if (action === 'start') {
     startTimer();
+  } else{
+    stopTimer();
   }
 });
 
@@ -24,6 +27,7 @@ const { mode } = event.target.dataset;
     if (!mode) return;
 
     switchMode(mode);
+    stopTimer();
 }
 
 
@@ -46,6 +50,8 @@ function getRemainingTime(endTime) {
 function startTimer() {
     let { total } = timer.remainingTime;
     const endTime = Date.parse(new Date()) + total * 1000;
+
+    if (timer.mode === 'Study') timer.sessions++;
   
     mainButton.dataset.action = 'stop';
     mainButton.textContent = 'stop';
@@ -58,15 +64,31 @@ function startTimer() {
       total = timer.remainingTime.total;
       if (total <= 0) {
         clearInterval(interval);
+
+        switch (timer.mode) {
+            case 'Study':
+              if (timer.sessions % timer.Break === 0) {
+                switchMode('Break');
+              }
+              break;
+            default:
+              switchMode('Study');
+          }
+          
+          startTimer();
       }
     }, 1000);
   }
 
-  document.addEventListener('DOMContentLoaded', () => {
-    switchMode('Study');
-  });
-  
 
+function stopTimer() {
+    clearInterval(interval);
+  
+    mainButton.dataset.action = 'start';
+    mainButton.textContent = 'start';
+    mainButton.classList.remove('active');
+  }
+  
 
 function updateClock()  {
   const { remainingTime } = timer;
