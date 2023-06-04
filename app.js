@@ -1,7 +1,7 @@
 //used open source tutorial
 
 const timer = {
-    Study: 25,
+    Study: 1,
     Break: 5,
     sessions: 0,
   };
