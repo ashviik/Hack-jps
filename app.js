@@ -1,3 +1,5 @@
+//used open source tutorial
+
 const timer = {
     Study: 25,
     Break: 5,
